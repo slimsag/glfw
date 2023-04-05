@@ -1,0 +1,19 @@
+.{
+    .name = "glfw",
+    .version = "0.0.0",
+
+    .dependencies = .{
+        .vulkan_headers = .{
+            .url = "https://github.com/hexops/vulkan-headers/archive/4ab9e16ab560dd1d21f0419683793438c1a79b76.tar.gz",
+            .hash = "1220efe5e17d71b3f40f98321b2df0ac89715f7ed16d79c4e53aef89ba624f98ff17",
+        },
+        .wayland_headers = .{
+            .url = "https://github.com/hexops/wayland-headers/archive/f816b263dfb6973adb518f6ae32483f6b49b1903.tar.gz",
+            .hash = "12203b0df7fd928fa9eb938aa7d344c86240893d57a85448a6b88cc7ee1218c83d10",
+        },
+        .x11_headers = .{
+            .url = "https://github.com/hexops/x11-headers/archive/040c368534fc28c20ac01ef810e9a693271d2ff0.tar.gz",
+            .hash = "122084cccf50a7ba4ce2b9bbe4fa963b4ada255745ead59f4919e483f42bc4cd1c10",
+        },
+    },
+}
