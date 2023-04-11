@@ -148,6 +148,7 @@ const linux_wl_sources = [_][]const u8{
 };
 
 const linux_x11_sources = [_][]const u8{
+    "src/glx_context.c",
     "src/x11_init.c",
     "src/x11_monitor.c",
     "src/x11_window.c",
