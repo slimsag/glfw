@@ -4,16 +4,16 @@
 
     .dependencies = .{
         .vulkan_headers = .{
-            .url = "https://github.com/hexops/vulkan-headers/archive/4ab9e16ab560dd1d21f0419683793438c1a79b76.tar.gz",
-            .hash = "1220efe5e17d71b3f40f98321b2df0ac89715f7ed16d79c4e53aef89ba624f98ff17",
+            .url = "https://github.com/hexops/vulkan-headers/archive/ad879d615bb324a3b12a11eaa25fe1106b3af6b9.tar.gz",
+            .hash = "1220b3b9c72700fbcabcb6a66186bb580970daa44386c6c2235bd3e35062536836c6",
         },
         .wayland_headers = .{
-            .url = "https://github.com/hexops/wayland-headers/archive/f816b263dfb6973adb518f6ae32483f6b49b1903.tar.gz",
-            .hash = "12203b0df7fd928fa9eb938aa7d344c86240893d57a85448a6b88cc7ee1218c83d10",
+            .url = "https://github.com/hexops/wayland-headers/archive/1f0f0e025137ed1a0def0361ad977161d85536d3.tar.gz",
+            .hash = "122037f8bf2d93a551d7c6c2e9ce167b5d3dda53d8ea2f56878e33a1bc0c7826a151",
         },
         .x11_headers = .{
-            .url = "https://github.com/hexops/x11-headers/archive/040c368534fc28c20ac01ef810e9a693271d2ff0.tar.gz",
-            .hash = "122084cccf50a7ba4ce2b9bbe4fa963b4ada255745ead59f4919e483f42bc4cd1c10",
+            .url = "https://github.com/hexops/x11-headers/archive/e8bab678be7e74acac5bb1169796e22a0374075c.tar.gz",
+            .hash = "1220598713a2b737ec4dc6ca6469bb5a2793192f76716ca3369090668f5107e19580",
         },
     },
 }

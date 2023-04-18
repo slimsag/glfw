@@ -113,7 +113,7 @@ pub fn build(b: *std.Build) void {
         },
     }
 
-    lib.install();
+    b.installArtifact(lib);
 }
 
 const base_sources = [_][]const u8{
