@@ -31,6 +31,7 @@ git diff $(git merge-base origin/master upstream/master)..origin/master \
     ':(exclude)README.md' \
     ':(exclude)build.zig' \
     ':(exclude)build.zig.zon' \
+    ':(exclude).github' \
     ':(exclude).gitattributes' \
     ':(exclude).gitignore'
 ```
