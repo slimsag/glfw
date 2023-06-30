@@ -1,19 +1,18 @@
 .{
     .name = "glfw",
     .version = "0.0.0",
-
     .dependencies = .{
         .vulkan_headers = .{
-            .url = "https://github.com/hexops/vulkan-headers/archive/08c42d882b5063b46ab63e15518fdb49cd7c08d2.tar.gz",
-            .hash = "1220b3b9c72700fbcabcb6a66186bb580970daa44386c6c2235bd3e35062536836c6",
+            .url = "https://github.com/hexops/vulkan-headers/archive/e1b061ff624531e82a7daea5dbd56c07e08bf0be.tar.gz",
+            .hash = "1220f05298a3f0da500187aa030192da322a3134a9890ffa97dd9fd4c44d97954ae7",
         },
         .wayland_headers = .{
-            .url = "https://github.com/hexops/wayland-headers/archive/bf7ecf558df75290ac7743f8e74ecd24fda3ca5e.tar.gz",
-            .hash = "122037f8bf2d93a551d7c6c2e9ce167b5d3dda53d8ea2f56878e33a1bc0c7826a151"
+            .url = "https://github.com/hexops/wayland-headers/archive/7bf46f3d60edab2171643ff85770c392ef62704d.tar.gz",
+            .hash = "1220c03f4705cc67870bf9c6c4214cd8542d79ca27699ac083da526e773db80899f7",
         },
         .x11_headers = .{
-            .url = "https://github.com/hexops/x11-headers/archive/aef9e71a69aadece859139c416b6751cdeb7915a.tar.gz",
-            .hash = "1220598713a2b737ec4dc6ca6469bb5a2793192f76716ca3369090668f5107e19580",
+            .url = "https://github.com/hexops/x11-headers/archive/1db4df130531c6889df664541bc62161510b9189.tar.gz",
+            .hash = "1220dc05143bb1c9adcfb4972d553947090dee4ed2b65097b7d27b489c75049b82a5",
         },
     },
 }
