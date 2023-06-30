@@ -4,15 +4,15 @@
     .dependencies = .{
         .vulkan_headers = .{
             .url = "https://github.com/hexops/vulkan-headers/archive/e1b061ff624531e82a7daea5dbd56c07e08bf0be.tar.gz",
-            .hash = "1220f05298a3f0da500187aa030192da322a3134a9890ffa97dd9fd4c44d97954ae7",
+            .hash = "12204967f9d07fda3af6a21d6ab71fb832da2186176c530a7a14aa96043537399e6b",
         },
         .wayland_headers = .{
             .url = "https://github.com/hexops/wayland-headers/archive/7bf46f3d60edab2171643ff85770c392ef62704d.tar.gz",
-            .hash = "1220c03f4705cc67870bf9c6c4214cd8542d79ca27699ac083da526e773db80899f7",
+            .hash = "1220689912c40c0880b094f748199c490810d4fa4c58ce1ef9058ce97f46ee28496a",
         },
         .x11_headers = .{
             .url = "https://github.com/hexops/x11-headers/archive/1db4df130531c6889df664541bc62161510b9189.tar.gz",
-            .hash = "1220dc05143bb1c9adcfb4972d553947090dee4ed2b65097b7d27b489c75049b82a5",
+            .hash = "12208b3ccaec785e9344472c08bada6137d60666f0d52fc8cf62aae4251056db7737",
         },
     },
 }
