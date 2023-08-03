@@ -133,7 +133,7 @@ pub fn build(b: *std.Build) void {
 }
 
 pub fn addPaths(step: *std.build.CompileStep) void {
-    step.addIncludePath(sdkPath("/include"));
+    step.addIncludePath(.{ .path = sdkPath("/include") });
 }
 
 fn sdkPath(comptime suffix: []const u8) []const u8 {
