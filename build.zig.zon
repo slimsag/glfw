@@ -2,6 +2,10 @@
     .name = "glfw",
     .version = "0.0.0",
     .dependencies = .{
+        .xcode_frameworks = .{
+            .url = "https://github.com/hexops/xcode-frameworks-pkg/archive/d486474a6af7fafd89e8314e0bf7eca4709f811b.tar.gz",
+            .hash = "1220293eae4bf67a7c27a18a8133621337cde91a97bc6859a9431b3b2d4217dfb5fb",
+        },
         .vulkan_headers = .{
             .url = "https://pkg.machengine.org/vulkan-headers/778dc5815d2901fc7ac82288c207428e8a74201e.tar.gz",
             .hash = "12205b5d6d1281995d0d402d2675c8989f2b096035f7216fe039e1a20dd7cf67c447",
