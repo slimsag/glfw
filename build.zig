@@ -135,14 +135,14 @@ pub fn lib(
     optimize: std.builtin.OptimizeMode,
     target: std.zig.CrossTarget,
 ) *std.Build.Step.Compile {
-    const shared = b.option(bool, "shared", "Build as a shared library") orelse false;
+    const shared = false;
 
-    const use_x11 = b.option(bool, "x11", "Build with X11. Only useful on Linux") orelse true;
-    const use_wl = b.option(bool, "wayland", "Build with Wayland. Only useful on Linux") orelse true;
+    const use_x11 = true;
+    const use_wl = true;
 
-    const use_opengl = b.option(bool, "opengl", "Build with OpenGL; deprecated on MacOS") orelse false;
-    const use_gles = b.option(bool, "gles", "Build with GLES; not supported on MacOS") orelse false;
-    const use_metal = b.option(bool, "metal", "Build with Metal; only supported on MacOS") orelse true;
+    const use_opengl = false;
+    const use_gles = false;
+    const use_metal = true;
 
     const l = std.Build.CompileStep.create(b, .{
         .name = "glfw",
