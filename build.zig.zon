@@ -11,12 +11,12 @@
             .hash = "12209aeba80369fa8638b82179b47e6742adb98a3a5b01bc518565504a922baad3e4",
         },
         .wayland_headers = .{
-            .url = "https://pkg.machengine.org/wayland-headers/82bf14ba6604794c00fd8c3a4818ec32c7cedeba.tar.gz",
-            .hash = "12206781cb884fc8e524e90bea3c4a451e1dc78761b534f5dfb40973771a2fd07c22",
+            .url = "https://pkg.machengine.org/wayland-headers/032cc655997230a3fa02e24b9dcf4936ea6f180f.tar.gz",
+            .hash = "12200ca4e4528fee3d3da8b5bb0b590146e3983d7c355da481d2590b519052449ba2",
         },
         .x11_headers = .{
-            .url = "https://pkg.machengine.org/x11-headers/26d12e9fc0d893085bcb711088a4a19afdff1adc.tar.gz",
-            .hash = "1220371a61d8bb57fce8ee1741f623cc19b0edd7d1b4adc9918663f8a7ef08aa4f3f",
+            .url = "https://pkg.machengine.org/x11-headers/a91f9bec9fa1e4efd13f6fa7987084627b74f32f.tar.gz",
+            .hash = "12200644e186f0b203485338d44d13c0aa418425d9e95d2f9d53d85511c0cd657cb7",
         },
     },
 }
