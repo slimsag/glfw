@@ -1,6 +1,19 @@
 .{
     .name = "glfw",
     .version = "0.0.0",
+    .paths = .{
+        "src/",
+        "include/",
+        "build.zig",
+        "build.zig.zon",
+        "LICENSE.md",
+        "README.md",
+        "CONTRIBUTORS.md",
+        ".gitignore",
+        ".gitattributes",
+        "update.sh",
+        "verify.sh",
+    },
     .dependencies = .{
         .xcode_frameworks = .{
             .url = "https://github.com/hexops/xcode-frameworks-pkg/archive/f8b854f9a1f4b4602b4f998ee42588d524d44e52.tar.gz",
