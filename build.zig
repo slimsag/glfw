@@ -59,8 +59,14 @@ pub fn build(b: *std.Build) void {
             }
 
             const flags = [_][]const u8{ "-D_GLFW_WIN32", include_src_flag };
-            lib.addCSourceFiles(&base_sources, &flags);
-            lib.addCSourceFiles(&windows_sources, &flags);
+            lib.addCSourceFiles(.{
+                .files = &base_sources,
+                .flags = &flags,
+            });
+            lib.addCSourceFiles(.{
+                .files = &windows_sources,
+                .flags = &flags,
+            });
         },
         .macos => {
             lib.linkSystemLibraryName("objc");
@@ -80,8 +86,14 @@ pub fn build(b: *std.Build) void {
             }
 
             const flags = [_][]const u8{ "-D_GLFW_COCOA", include_src_flag };
-            lib.addCSourceFiles(&base_sources, &flags);
-            lib.addCSourceFiles(&macos_sources, &flags);
+            lib.addCSourceFiles(.{
+                .files = &base_sources,
+                .flags = &flags,
+            });
+            lib.addCSourceFiles(.{
+                .files = &macos_sources,
+                .flags = &flags,
+            });
         },
 
         // everything that isn't windows or mac is linux :P
@@ -117,7 +129,10 @@ pub fn build(b: *std.Build) void {
 
             flags.append(include_src_flag) catch unreachable;
 
-            lib.addCSourceFiles(sources.slice(), flags.slice());
+            lib.addCSourceFiles(.{
+                .files = sources.slice(),
+                .flags = flags.slice(),
+            });
         },
     }
     b.installArtifact(lib);
