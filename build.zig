@@ -29,10 +29,7 @@ pub fn build(b: *std.Build) void {
 
     lib.installHeadersDirectory("include/GLFW", "GLFW");
 
-    lib.linkLibrary(b.dependency("vulkan_headers", .{
-        .target = target,
-        .optimize = optimize,
-    }).artifact("vulkan-headers"));
+    link(b, lib);
 
     if (lib.target_info.target.os.tag == .macos) {
         // MacOS: this must be defined for macOS 13.3 and older.
@@ -105,21 +102,11 @@ pub fn build(b: *std.Build) void {
             sources.appendSlice(&linux_sources) catch unreachable;
 
             if (use_x11) {
-                lib.linkLibrary(b.dependency("x11_headers", .{
-                    .target = target,
-                    .optimize = optimize,
-                }).artifact("x11-headers"));
-
                 sources.appendSlice(&linux_x11_sources) catch unreachable;
                 flags.append("-D_GLFW_X11") catch unreachable;
             }
 
             if (use_wl) {
-                lib.linkLibrary(b.dependency("wayland_headers", .{
-                    .target = target,
-                    .optimize = optimize,
-                }).artifact("wayland-headers"));
-
                 lib.defineCMacro("WL_MARSHAL_FLAG_DESTROY", "1");
 
                 sources.appendSlice(&linux_wl_sources) catch unreachable;
@@ -138,8 +125,21 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(lib);
 }
 
-pub fn addPaths(step: *std.build.CompileStep) void {
+pub fn link(b: *std.Build, step: *std.build.CompileStep) void {
     step.addIncludePath(.{ .path = sdkPath("/include") });
+    if (step.target.toTarget().isDarwin()) @import("xcode_frameworks").addPaths(step);
+    step.linkLibrary(b.dependency("vulkan_headers", .{
+        .target = step.target,
+        .optimize = step.optimize,
+    }).artifact("vulkan-headers"));
+    step.linkLibrary(b.dependency("x11_headers", .{
+        .target = step.target,
+        .optimize = step.optimize,
+    }).artifact("x11-headers"));
+    step.linkLibrary(b.dependency("wayland_headers", .{
+        .target = step.target,
+        .optimize = step.optimize,
+    }).artifact("wayland-headers"));
 }
 
 fn sdkPath(comptime suffix: []const u8) []const u8 {
