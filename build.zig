@@ -39,7 +39,7 @@ pub fn build(b: *std.Build) void {
         // Critically, this MUST NOT be included as a -D__kernel_ptr_semantics flag. If it is,
         // then this macro will not be defined even if `defineCMacro` was also called!
         lib.defineCMacro("__kernel_ptr_semantics", "");
-        @import("xcode_frameworks").addPaths(b, lib);
+        @import("xcode_frameworks").addPaths(lib);
     }
 
     const include_src_flag = "-Isrc";
