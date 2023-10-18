@@ -66,6 +66,15 @@ pub fn build(b: *std.Build) void {
             });
         },
         .macos => {
+            // Transitive dependencies, explicit linkage of these works around
+            // ziglang/zig#17130
+            lib.linkFramework("CFNetwork");
+            lib.linkFramework("ApplicationServices");
+            lib.linkFramework("ColorSync");
+            lib.linkFramework("CoreText");
+            lib.linkFramework("ImageIO");
+
+            // Direct dependencies
             lib.linkSystemLibraryName("objc");
             lib.linkFramework("IOKit");
             lib.linkFramework("CoreFoundation");
