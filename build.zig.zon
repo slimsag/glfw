@@ -14,8 +14,8 @@
     },
     .dependencies = .{
         .xcode_frameworks = .{
-            .url = "https://pkg.machengine.org/xcode-frameworks/8a920385383cc4c0a2a4f55b084d402a9400a5a8.tar.gz",
-            .hash = "122051b3c616c62d55a82207c1cb76e2264b26e8378f56b1e5376d7684bd13616589",
+            .url = "https://github.com/der-teufel-programming/xcode-frameworks/archive/dccf602c494fcb28adbbe968cbc75252342c5634.tar.gz",
+            .hash = "122025275708025ffbd724c679f68ad9985b2ba5182d07dfc52d4dfe79b91fbc0903",
         },
         .vulkan_headers = .{
             .url = "https://pkg.machengine.org/vulkan-headers/1feb2d841870f7461c28b95549cb707440226138.tar.gz",

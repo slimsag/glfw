@@ -13,12 +13,14 @@ pub fn build(b: *std.Build) void {
     const use_gles = b.option(bool, "gles", "Build with GLES; not supported on MacOS") orelse false;
     const use_metal = b.option(bool, "metal", "Build with Metal; only supported on MacOS") orelse true;
 
-    const lib = std.Build.CompileStep.create(b, .{
+    const lib = std.Build.Step.Compile.create(b, .{
         .name = "glfw",
         .kind = .lib,
         .linkage = if (shared) .dynamic else .static,
-        .target = target,
-        .optimize = optimize,
+        .root_module = .{
+            .target = target,
+            .optimize = optimize,
+        },
     });
 
     lib.linkLibC();
@@ -31,7 +33,7 @@ pub fn build(b: *std.Build) void {
 
     link(b, lib);
 
-    if (lib.target_info.target.os.tag == .macos) {
+    if (target.result.os.tag == .macos) {
         // MacOS: this must be defined for macOS 13.3 and older.
         // Critically, this MUST NOT be included as a -D__kernel_ptr_semantics flag. If it is,
         // then this macro will not be defined even if `defineCMacro` was also called!
@@ -41,18 +43,18 @@ pub fn build(b: *std.Build) void {
 
     const include_src_flag = "-Isrc";
 
-    switch (lib.target_info.target.os.tag) {
+    switch (target.result.os.tag) {
         .windows => {
-            lib.linkSystemLibraryName("gdi32");
-            lib.linkSystemLibraryName("user32");
-            lib.linkSystemLibraryName("shell32");
+            lib.linkSystemLibrary("gdi32");
+            lib.linkSystemLibrary("user32");
+            lib.linkSystemLibrary("shell32");
 
             if (use_opengl) {
-                lib.linkSystemLibraryName("opengl32");
+                lib.linkSystemLibrary("opengl32");
             }
 
             if (use_gles) {
-                lib.linkSystemLibraryName("GLESv3");
+                lib.linkSystemLibrary("GLESv3");
             }
 
             const flags = [_][]const u8{ "-D_GLFW_WIN32", include_src_flag };
@@ -75,7 +77,7 @@ pub fn build(b: *std.Build) void {
             lib.linkFramework("ImageIO");
 
             // Direct dependencies
-            lib.linkSystemLibraryName("objc");
+            lib.linkSystemLibrary("objc");
             lib.linkFramework("IOKit");
             lib.linkFramework("CoreFoundation");
             lib.linkFramework("AppKit");
@@ -134,20 +136,24 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(lib);
 }
 
-pub fn link(b: *std.Build, step: *std.build.CompileStep) void {
+pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
     step.addIncludePath(.{ .path = sdkPath("/include") });
-    if (step.target.toTarget().isDarwin()) @import("xcode_frameworks").addPaths(step);
+    if (step.rootModuleTarget().isDarwin()) @import("xcode_frameworks").addPaths(step);
+    const target_triple: []const u8 = step.rootModuleTarget().zigTriple(b.allocator) catch @panic("OOM");
+    const cpu_opts: []const u8 = step.root_module.resolved_target.?.query.serializeCpuAlloc(b.allocator) catch @panic("OOM");
     step.linkLibrary(b.dependency("vulkan_headers", .{
-        .target = step.target,
-        .optimize = step.optimize,
+        .target = target_triple,
+        .cpu = cpu_opts,
+        .optimize = step.root_module.optimize.?,
     }).artifact("vulkan-headers"));
     step.linkLibrary(b.dependency("x11_headers", .{
-        .target = step.target,
-        .optimize = step.optimize,
+        .target = target_triple,
+        .optimize = step.root_module.optimize.?,
     }).artifact("x11-headers"));
     step.linkLibrary(b.dependency("wayland_headers", .{
-        .target = step.target,
-        .optimize = step.optimize,
+        .target = target_triple,
+        .cpu = cpu_opts,
+        .optimize = step.root_module.optimize.?,
     }).artifact("wayland-headers"));
 }
 
