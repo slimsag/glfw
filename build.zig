@@ -150,9 +150,9 @@ pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
     step.addIncludePath(b.dependency("wayland_headers", .{}).path("wayland-generated"));
 }
 
-pub fn link2(b: *std.Build, m: *std.Build.Module) void {
+pub fn linkModule(b: *std.Build, m: *std.Build.Module) void {
     m.addIncludePath(.{ .path = "include" });
-    if (m.resolved_target != null and m.resolved_target.?.result.isDarwin()) @import("xcode_frameworks").addPaths2(m);
+    if (m.resolved_target != null and m.resolved_target.?.result.isDarwin()) @import("xcode_frameworks").addPathsModule(m);
     m.addIncludePath(b.dependency("vulkan_headers", .{}).path("include"));
     if (m.resolved_target) |target| {
         const triple: []const u8 = target.result.zigTriple(b.allocator) catch @panic("OOM");
