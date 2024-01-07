@@ -159,14 +159,6 @@ pub fn link2(b: *std.Build, m: *std.Build.Module) void {
     m.addIncludePath(b.dependency("wayland_headers", .{}).path("wayland-generated"));
 }
 
-// fn sdkPath(comptime suffix: []const u8) []const u8 {
-//     if (suffix[0] != '/') @compileError("suffix must be an absolute path");
-//     return comptime blk: {
-//         const root_dir = std.fs.path.dirname(@src().file) orelse ".";
-//         break :blk root_dir ++ suffix;
-//     };
-// }
-
 const base_sources = [_][]const u8{
     "src/context.c",
     "src/egl_context.c",
