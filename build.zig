@@ -31,8 +31,6 @@ pub fn build(b: *std.Build) void {
 
     lib.installHeadersDirectory("include/GLFW", "GLFW");
 
-    link(b, lib);
-
     if (target.result.os.tag == .macos) {
         // MacOS: this must be defined for macOS 13.3 and older.
         // Critically, this MUST NOT be included as a -D__kernel_ptr_semantics flag. If it is,
@@ -133,98 +131,101 @@ pub fn build(b: *std.Build) void {
             });
         },
     }
+    link(b, lib);
     b.installArtifact(lib);
 }
 
 pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
-    step.addIncludePath(.{ .path = sdkPath("/include") });
+    step.addIncludePath(.{ .path = "include" });
     if (step.rootModuleTarget().isDarwin()) @import("xcode_frameworks").addPaths(step);
     const target_triple: []const u8 = step.rootModuleTarget().zigTriple(b.allocator) catch @panic("OOM");
     const cpu_opts: []const u8 = step.root_module.resolved_target.?.query.serializeCpuAlloc(b.allocator) catch @panic("OOM");
-    step.linkLibrary(b.dependency("vulkan_headers", .{
-        .target = target_triple,
-        .cpu = cpu_opts,
-        .optimize = step.root_module.optimize.?,
-    }).artifact("vulkan-headers"));
+    step.addIncludePath(b.dependency("vulkan_headers", .{}).path("include"));
     step.linkLibrary(b.dependency("x11_headers", .{
         .target = target_triple,
         .optimize = step.root_module.optimize.?,
-    }).artifact("x11-headers"));
-    step.linkLibrary(b.dependency("wayland_headers", .{
-        .target = target_triple,
         .cpu = cpu_opts,
-        .optimize = step.root_module.optimize.?,
-    }).artifact("wayland-headers"));
+    }).artifact("x11-headers"));
+    step.addIncludePath(b.dependency("wayland_headers", .{}).path("include"));
+    step.addIncludePath(b.dependency("wayland_headers", .{}).path("wayland-generated"));
 }
 
-fn sdkPath(comptime suffix: []const u8) []const u8 {
-    if (suffix[0] != '/') @compileError("suffix must be an absolute path");
-    return comptime blk: {
-        const root_dir = std.fs.path.dirname(@src().file) orelse ".";
-        break :blk root_dir ++ suffix;
-    };
+pub fn link2(b: *std.Build, m: *std.Build.Module) void {
+    m.addIncludePath(.{ .path = "include" });
+    if (m.resolved_target != null and m.resolved_target.?.result.isDarwin()) @import("xcode_frameworks").addPaths2(m);
+    m.addIncludePath(b.dependency("vulkan_headers", .{}).path("include"));
+    m.linkLibrary(b.dependency("x11_headers", .{}).artifact("x11-headers"));
+    m.addIncludePath(b.dependency("wayland_headers", .{}).path("include"));
+    m.addIncludePath(b.dependency("wayland_headers", .{}).path("wayland-generated"));
 }
 
-// TODO: remove sdkPath usage below once hexops/mach#902 is fixed.
+// fn sdkPath(comptime suffix: []const u8) []const u8 {
+//     if (suffix[0] != '/') @compileError("suffix must be an absolute path");
+//     return comptime blk: {
+//         const root_dir = std.fs.path.dirname(@src().file) orelse ".";
+//         break :blk root_dir ++ suffix;
+//     };
+// }
+
 const base_sources = [_][]const u8{
-    sdkPath("/src/context.c"),
-    sdkPath("/src/egl_context.c"),
-    sdkPath("/src/init.c"),
-    sdkPath("/src/input.c"),
-    sdkPath("/src/monitor.c"),
-    sdkPath("/src/null_init.c"),
-    sdkPath("/src/null_joystick.c"),
-    sdkPath("/src/null_monitor.c"),
-    sdkPath("/src/null_window.c"),
-    sdkPath("/src/osmesa_context.c"),
-    sdkPath("/src/platform.c"),
-    sdkPath("/src/vulkan.c"),
-    sdkPath("/src/window.c"),
+    "src/context.c",
+    "src/egl_context.c",
+    "src/init.c",
+    "src/input.c",
+    "src/monitor.c",
+    "src/null_init.c",
+    "src/null_joystick.c",
+    "src/null_monitor.c",
+    "src/null_window.c",
+    "src/osmesa_context.c",
+    "src/platform.c",
+    "src/vulkan.c",
+    "src/window.c",
 };
 
 const linux_sources = [_][]const u8{
-    sdkPath("/src/linux_joystick.c"),
-    sdkPath("/src/posix_module.c"),
-    sdkPath("/src/posix_poll.c"),
-    sdkPath("/src/posix_thread.c"),
-    sdkPath("/src/posix_time.c"),
-    sdkPath("/src/xkb_unicode.c"),
+    "src/linux_joystick.c",
+    "src/posix_module.c",
+    "src/posix_poll.c",
+    "src/posix_thread.c",
+    "src/posix_time.c",
+    "src/xkb_unicode.c",
 };
 
 const linux_wl_sources = [_][]const u8{
-    sdkPath("/src/wl_init.c"),
-    sdkPath("/src/wl_monitor.c"),
-    sdkPath("/src/wl_window.c"),
+    "src/wl_init.c",
+    "src/wl_monitor.c",
+    "src/wl_window.c",
 };
 
 const linux_x11_sources = [_][]const u8{
-    sdkPath("/src/glx_context.c"),
-    sdkPath("/src/x11_init.c"),
-    sdkPath("/src/x11_monitor.c"),
-    sdkPath("/src/x11_window.c"),
+    "src/glx_context.c",
+    "src/x11_init.c",
+    "src/x11_monitor.c",
+    "src/x11_window.c",
 };
 
 const windows_sources = [_][]const u8{
-    sdkPath("/src/wgl_context.c"),
-    sdkPath("/src/win32_init.c"),
-    sdkPath("/src/win32_joystick.c"),
-    sdkPath("/src/win32_module.c"),
-    sdkPath("/src/win32_monitor.c"),
-    sdkPath("/src/win32_thread.c"),
-    sdkPath("/src/win32_time.c"),
-    sdkPath("/src/win32_window.c"),
+    "src/wgl_context.c",
+    "src/win32_init.c",
+    "src/win32_joystick.c",
+    "src/win32_module.c",
+    "src/win32_monitor.c",
+    "src/win32_thread.c",
+    "src/win32_time.c",
+    "src/win32_window.c",
 };
 
 const macos_sources = [_][]const u8{
     // C sources
-    sdkPath("/src/cocoa_time.c"),
-    sdkPath("/src/posix_module.c"),
-    sdkPath("/src/posix_thread.c"),
+    "src/cocoa_time.c",
+    "src/posix_module.c",
+    "src/posix_thread.c",
 
     // ObjC sources
-    sdkPath("/src/cocoa_init.m"),
-    sdkPath("/src/cocoa_joystick.m"),
-    sdkPath("/src/cocoa_monitor.m"),
-    sdkPath("/src/cocoa_window.m"),
-    sdkPath("/src/nsgl_context.m"),
+    "src/cocoa_init.m",
+    "src/cocoa_joystick.m",
+    "src/cocoa_monitor.m",
+    "src/cocoa_window.m",
+    "src/nsgl_context.m",
 };
