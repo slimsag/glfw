@@ -154,7 +154,17 @@ pub fn link2(b: *std.Build, m: *std.Build.Module) void {
     m.addIncludePath(.{ .path = "include" });
     if (m.resolved_target != null and m.resolved_target.?.result.isDarwin()) @import("xcode_frameworks").addPaths2(m);
     m.addIncludePath(b.dependency("vulkan_headers", .{}).path("include"));
-    m.linkLibrary(b.dependency("x11_headers", .{}).artifact("x11-headers"));
+    if (m.resolved_target) |target| {
+        const triple: []const u8 = target.result.zigTriple(b.allocator) catch @panic("OOM");
+        const cpu_opts: []const u8 = target.query.serializeCpuAlloc(b.allocator) catch @panic("OOM");
+        m.linkLibrary(b.dependency("x11_headers", .{
+            .target = triple,
+            .cpu = cpu_opts,
+            .optimize = m.optimize orelse .Debug,
+        }).artifact("x11-headers"));
+    } else {
+        m.linkLibrary(b.dependency("x11_headers", .{}).artifact("x11-headers"));
+    }
     m.addIncludePath(b.dependency("wayland_headers", .{}).path("include"));
     m.addIncludePath(b.dependency("wayland_headers", .{}).path("wayland-generated"));
 }
