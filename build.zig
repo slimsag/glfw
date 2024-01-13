@@ -22,21 +22,35 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         },
     });
-
+    lib.addIncludePath(.{ .path = "include" });
     lib.linkLibC();
 
-    if (shared) {
-        lib.defineCMacro("_GLFW_BUILD_DLL", "1");
-    }
+    if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
 
     lib.installHeadersDirectory("include/GLFW", "GLFW");
+    // GLFW headers depend on these headers, so they must be distributed too.
+    const vulkan_headers_dep = b.dependency("vulkan_headers", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    lib.installLibraryHeaders(vulkan_headers_dep.artifact("vulkan-headers"));
+    if (target.result.os.tag == .linux) {
+        const x11_headers_dep = b.dependency("x11_headers", .{
+            .target = target,
+            .optimize = optimize,
+        });
+        const wayland_headers_dep = b.dependency("wayland_headers", .{
+            .target = target,
+            .optimize = optimize,
+        });
+        lib.linkLibrary(x11_headers_dep.artifact("x11-headers"));
+        lib.linkLibrary(wayland_headers_dep.artifact("wayland-headers"));
+        lib.installLibraryHeaders(x11_headers_dep.artifact("x11-headers"));
+        lib.installLibraryHeaders(wayland_headers_dep.artifact("wayland-headers"));
+    }
 
-    link(b, lib);
-
-    if (target.result.os.tag == .macos) {
+    if (target.result.isDarwin()) {
         // MacOS: this must be defined for macOS 13.3 and older.
-        // Critically, this MUST NOT be included as a -D__kernel_ptr_semantics flag. If it is,
-        // then this macro will not be defined even if `defineCMacro` was also called!
         lib.defineCMacro("__kernel_ptr_semantics", "");
         @import("xcode_frameworks").addPaths(lib);
     }
@@ -137,24 +151,14 @@ pub fn build(b: *std.Build) void {
 }
 
 pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
-    step.addIncludePath(.{ .path = sdkPath("/include") });
-    if (step.rootModuleTarget().isDarwin()) @import("xcode_frameworks").addPaths(step);
-    const target_triple: []const u8 = step.rootModuleTarget().zigTriple(b.allocator) catch @panic("OOM");
-    const cpu_opts: []const u8 = step.root_module.resolved_target.?.query.serializeCpuAlloc(b.allocator) catch @panic("OOM");
-    step.linkLibrary(b.dependency("vulkan_headers", .{
-        .target = target_triple,
-        .cpu = cpu_opts,
-        .optimize = step.root_module.optimize.?,
-    }).artifact("vulkan-headers"));
-    step.linkLibrary(b.dependency("x11_headers", .{
-        .target = target_triple,
-        .optimize = step.root_module.optimize.?,
-    }).artifact("x11-headers"));
-    step.linkLibrary(b.dependency("wayland_headers", .{
-        .target = target_triple,
-        .cpu = cpu_opts,
-        .optimize = step.root_module.optimize.?,
-    }).artifact("wayland-headers"));
+    _ = b;
+    _ = step;
+
+    @panic(".link(b, step) has been replaced by .addPaths(step)");
+}
+
+pub fn addPaths(step: *std.Build.Step.Compile) void {
+    @import("xcode_frameworks").addPaths(step);
 }
 
 const base_sources = [_][]const u8{
