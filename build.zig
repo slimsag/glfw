@@ -158,7 +158,7 @@ pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
 }
 
 pub fn addPaths(step: *std.Build.Step.Compile) void {
-    @import("xcode_frameworks").addPaths(step);
+    if (step.rootModuleTarget().os.tag == .macos) @import("xcode_frameworks").addPaths(step);
 }
 
 const base_sources = [_][]const u8{
