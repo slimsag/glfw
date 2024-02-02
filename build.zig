@@ -24,6 +24,7 @@ pub fn build(b: *std.Build) void {
     });
     lib.addIncludePath(.{ .path = "include" });
     lib.linkLibC();
+    addPaths(&lib.root_module);
 
     if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
 
@@ -52,7 +53,6 @@ pub fn build(b: *std.Build) void {
     if (target.result.isDarwin()) {
         // MacOS: this must be defined for macOS 13.3 and older.
         lib.defineCMacro("__kernel_ptr_semantics", "");
-        @import("xcode_frameworks").addPaths(lib);
     }
 
     const include_src_flag = "-Isrc";
@@ -150,15 +150,8 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(lib);
 }
 
-pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
-    _ = b;
-    _ = step;
-
-    @panic(".link(b, step) has been replaced by .addPaths(step)");
-}
-
-pub fn addPaths(step: *std.Build.Step.Compile) void {
-    if (step.rootModuleTarget().os.tag == .macos) @import("xcode_frameworks").addPaths(step);
+pub fn addPaths(mod: *std.Build.Module) void {
+    if (mod.resolved_target.?.result.os.tag == .macos) @import("xcode_frameworks").addPaths(mod);
 }
 
 const base_sources = [_][]const u8{
