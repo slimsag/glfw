@@ -28,7 +28,7 @@ pub fn build(b: *std.Build) void {
 
     if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
 
-    lib.installHeadersDirectory("include/GLFW", "GLFW");
+    lib.installHeadersDirectory(b.path("include/GLFW"), "GLFW", .{});
     // GLFW headers depend on these headers, so they must be distributed too.
     const vulkan_headers_dep = b.dependency("vulkan_headers", .{
         .target = target,
