@@ -20,14 +20,17 @@
         .vulkan_headers = .{
             .url = "https://pkg.machengine.org/vulkan-headers/e33f2e482893a90bb36d67649ab30d5236ac21ab.tar.gz",
             .hash = "122017098e4ca00dac1a9d30d152a6e6e9522843219c6df4489210fb7c8a6e4c7c1a",
+            .lazy = true,
         },
         .wayland_headers = .{
             .url = "https://pkg.machengine.org/wayland-headers/4926b8c635aa2f215b0d5382060fc4091aa7b705.tar.gz",
             .hash = "12207decf58bee217ae9c5340a6852a62e7f5af9901bef9b1468d93e480798898285",
+            .lazy = true,
         },
         .x11_headers = .{
             .url = "https://pkg.machengine.org/x11-headers/ad1c4891f70302c61ba956cfd565758dc1ca9d28.tar.gz",
             .hash = "1220ce35d8f1556afd5bf4796a7899d459f9c628b989f247eaf6aa00fbad10a88c9f",
+            .lazy = true,
         },
     },
 }
