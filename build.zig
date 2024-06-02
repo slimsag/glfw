@@ -22,13 +22,13 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         },
     });
-    lib.addIncludePath(.{ .path = "include" });
+    lib.addIncludePath(b.path("include"));
     lib.linkLibC();
     addPaths(&lib.root_module);
 
     if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
 
-    lib.installHeadersDirectory("include/GLFW", "GLFW");
+    lib.installHeadersDirectory(b.path("include/GLFW"), "GLFW", .{});
     // GLFW headers depend on these headers, so they must be distributed too.
     if (b.lazyDependency("vulkan_headers", .{
         .target = target,
