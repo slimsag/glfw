@@ -103,3 +103,4 @@ tests/windows
 
 # Zig stuff
 zig-*
+.zig-cache
