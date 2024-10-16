@@ -24,7 +24,6 @@ pub fn build(b: *std.Build) void {
     });
     lib.addIncludePath(b.path("include"));
     lib.linkLibC();
-    addPaths(&lib.root_module);
 
     if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
 
@@ -44,18 +43,26 @@ pub fn build(b: *std.Build) void {
             lib.linkLibrary(dep.artifact("x11-headers"));
             lib.installLibraryHeaders(dep.artifact("x11-headers"));
         }
-        if (b.lazyDependency("wayland_headers", .{
-            .target = target,
-            .optimize = optimize,
-        })) |dep| {
-            lib.linkLibrary(dep.artifact("wayland-headers"));
-            lib.installLibraryHeaders(dep.artifact("wayland-headers"));
+        if (b.lazyDependency("wayland_headers", .{})) |dep| {
+            lib.addIncludePath(dep.path("wayland"));
+            lib.addIncludePath(dep.path("wayland-protocols"));
+            lib.installHeadersDirectory(dep.path("wayland"), ".", .{});
+            lib.installHeadersDirectory(dep.path("wayland-protocols"), ".", .{});
         }
     }
 
     if (target.result.isDarwin()) {
         // MacOS: this must be defined for macOS 13.3 and older.
         lib.defineCMacro("__kernel_ptr_semantics", "");
+
+        if (b.lazyDependency("xcode_frameworks", .{
+            .target = target,
+            .optimize = optimize,
+        })) |dep| {
+            lib.root_module.addSystemFrameworkPath(dep.path("Frameworks"));
+            lib.root_module.addSystemIncludePath(dep.path("include"));
+            lib.root_module.addLibraryPath(dep.path("lib"));
+        }
     }
 
     const include_src_flag = "-Isrc";
@@ -151,10 +158,6 @@ pub fn build(b: *std.Build) void {
         },
     }
     b.installArtifact(lib);
-}
-
-pub fn addPaths(mod: *std.Build.Module) void {
-    if (mod.resolved_target.?.result.os.tag == .macos) @import("xcode_frameworks").addPaths(mod);
 }
 
 const base_sources = [_][]const u8{
