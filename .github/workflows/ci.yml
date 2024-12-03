@@ -33,7 +33,7 @@ jobs:
       - name: build
         run: zig build
   x86_64-macos:
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
