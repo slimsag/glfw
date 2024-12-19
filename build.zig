@@ -13,19 +13,20 @@ pub fn build(b: *std.Build) void {
     const use_gles = b.option(bool, "gles", "Build with GLES; not supported on MacOS") orelse false;
     const use_metal = b.option(bool, "metal", "Build with Metal; only supported on MacOS") orelse true;
 
-    const lib = std.Build.Step.Compile.create(b, .{
-        .name = "glfw",
-        .kind = .lib,
-        .linkage = if (shared) .dynamic else .static,
-        .root_module = .{
+    const lib: *std.Build.Step.Compile = switch (shared) {
+        inline else => |x| switch (x) {
+            false => std.Build.addStaticLibrary,
+            true => std.Build.addSharedLibrary,
+        }(b, .{
+            .name = "glfw",
             .target = target,
             .optimize = optimize,
-        },
-    });
+        }),
+    };
     lib.addIncludePath(b.path("include"));
     lib.linkLibC();
 
-    if (shared) lib.defineCMacro("_GLFW_BUILD_DLL", "1");
+    if (shared) lib.root_module.addCMacro("_GLFW_BUILD_DLL", "1");
 
     lib.installHeadersDirectory(b.path("include/GLFW"), "GLFW", .{});
     // GLFW headers depend on these headers, so they must be distributed too.
@@ -53,7 +54,7 @@ pub fn build(b: *std.Build) void {
 
     if (target.result.isDarwin()) {
         // MacOS: this must be defined for macOS 13.3 and older.
-        lib.defineCMacro("__kernel_ptr_semantics", "");
+        lib.root_module.addCMacro("__kernel_ptr_semantics", "");
 
         if (b.lazyDependency("xcode_frameworks", .{
             .target = target,
@@ -142,7 +143,7 @@ pub fn build(b: *std.Build) void {
             }
 
             if (use_wl) {
-                lib.defineCMacro("WL_MARSHAL_FLAG_DESTROY", "1");
+                lib.root_module.addCMacro("WL_MARSHAL_FLAG_DESTROY", "1");
 
                 sources.appendSlice(&linux_wl_sources) catch unreachable;
                 flags.append("-D_GLFW_WAYLAND") catch unreachable;
